@@ -1,14 +1,14 @@
 <?php
 // Поддомен аккаунта
-define('SUBDOMAIN', 'servicesflexeio');
+define('SUBDOMAIN', '');
 // Client id
-define('CLIENT_ID', '97e00cc3-5199-4010-81e1-ce22d85b76bd');
+define('CLIENT_ID', '');
 // Secret Key
-define('SECRET', 'l4Q8eoKaqpHYqLYnglC67OLaMhfdvX1x8SjtJ9tmlyb7hxdr3MTGvuUmJxGGz5wl');
+define('SECRET', '');
 // Authorization code
-define('CODE', 'def50200625c7da7353252d98b36038338e85f9808593a4b03784e3ca672386ac6b6fd1bb484115abeee75de00ea82ad4f5a75d330d5a877301c023151ffc439c1d93f202d1cfb8b7226fc05f2fe922cf3c030ff92dbc5d23a50397c9b710a136cbaaf9ff96d5d12f1427e47d7b6e457b8c01a01d9d9e4e7f51202277f1ec8a64f305e1c472e6efdd1c0995bc7c3b8c2177fe86c86855218fb3316715e41d0480cb09cc00b1be4378fb6922a0e16521042dc33d26343b629d5be63d825863496b12c86f303b696b0b0968245769f9e1987df16a20b8e45988c224464bb82f8024dbcd3acfa67fc62ba40057545d35520f5e9918939f0dba6c252a16f77170b7b069be590ffd2ce10e4533af51de1f12c235de0bafe42b3beb5bb47f85f9b66734cfe99ddbb3c3119e3dfe2fe9c92dd3d3b1df8677ed7d2b585bb7722c19edc0e3deceec152bcf315cec9859c383bf79509b01e42aa1c680153343826b93ad24cea892de4a9d6a8c1971fa11bab0dda1aba03e359061dacd1353bdc6c92adc18db6bc5b7f3b767ed86df9e247c4ffd65cf3cc8318d08a1e180dbbd8ac7c24ac0ea763ed587d32f0a7c0f9150bce8e51b2932efdeef673801edd7e611c');
+define('CODE', '');
 // Redirect uri
-define('REDIRECT_URI', 'https://flexe.io/amocrm/google_analytics/amo_api.php');
+define('REDIRECT_URI', '');
 
 define('KEYS', __DIR__ . '/amo_keys.txt');	// Ключи доступа
 define('JSON_NICE', JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
@@ -155,7 +155,7 @@ function say($s, $isOK = true) {
 
 
 function mylog($s) {
-	file_put_contents(LOG, date('d/m/y H:i:s') . ' ' . $s . PHP_EOL, FILE_APPEND);
+	file_put_contents(LOG, date('Y.m.d H:i:s') . ';' . $s . PHP_EOL, FILE_APPEND);
 	return;
 }
 

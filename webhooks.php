@@ -2,17 +2,21 @@
 include __DIR__ . '/amo_api.php';
 date_default_timezone_set('Europe/Moscow');
 
-sleep(5); // АМО ограничение: 7 запросов в секунду
+// АМО ограничение: 7 запросов в секунду
+// каждый раз берем рандомное количество секунд, пусть от 3 до 10
+$randomSececond = rand(3, 10);
+sleep($randomSececond);
 
 $query = [
-  'tid' => isset($_GET['tid']) ? $_GET['tid'] : '',
   'v' => '1',
   'ni' => '0',
   'z' => time(),
-  't' => 'event',
-  'ec' => isset($_GET['ec']) ? $_GET['ec'] : '',
-  'ea' => isset($_GET['ea']) ? $_GET['ea'] : ''
+  't' => 'event'
 ];
+
+foreach ($_GET as $key => $value) {
+  $query[$key] = $value;
+}
 
 $endpoint = 'https://www.google-analytics.com/collect';
 
@@ -20,7 +24,7 @@ $endpoint = 'https://www.google-analytics.com/collect';
 // сопоставление полей ga и amo
 $fieldsMapGA = [
   'cid' => '2515',
-  'utm_source' => '461089',
+  'utm_source' => '2495',
   'utm_content' => '2489',
   'utm_medium' => '2491',
   'utm_campaign' => '2493',
@@ -70,12 +74,22 @@ if (!empty($data)) {
     $query['cd1'] = $query['cid'];
   }
 
+  // если ev передана конкретная ценность, то возьмем ее
+  if (isset($query['ev']) && !empty($query['ev'])) {
+    $query['ev'] = intval($query['ev']);    
+  }
+
+  // если ev пустое значение, то берем из сделки
+  // если ev не существует, то ничего не делаем
+  if (isset($query['ev']) && empty($query['ev'])) {
+    $query['ev'] = isset($res->price) ? intval($res->price) : 0;
+  }
+
   $queryString = http_build_query($query, '', '&', PHP_QUERY_RFC3986);
 
   $error = checkGaParametr($query);
   if (!empty($error)) {
-    $logText = date('Y.m.d h:i:s', time()) . ';' . $error . PHP_EOL;
-    file_put_contents('error.txt', $logText, FILE_APPEND);
+    mylog($error);
     http_response_code(200);
     return;
   }
@@ -86,8 +100,8 @@ if (!empty($data)) {
 
   sendData($endpoint, $queryString, $headers, 'POST');
 } else {
-  $logText = date('Y.m.d h:i:s', time()) . '; данные от АМО отсутствуют' . PHP_EOL;
-  file_put_contents('error.txt', $logText, FILE_APPEND);
+  $logText = 'данные от АМО отсутствуют';
+  mylog($logText);
 }
 
 http_response_code(200);
@@ -121,8 +135,10 @@ function sendData($url, $data, $headers, $method = 'GET') {
   $code = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
   if ($code < 200 || $code > 204) {
-    $logText = date('Y.m.d h:i:s', time()) . ';' . $code . ' ' . $output . ' ' . curl_error($ch). PHP_EOL;
-    file_put_contents('error.txt', $logText, FILE_APPEND);
+    $logText = $code . ' ' . $output . ' ' . curl_error($ch). PHP_EOL;
+    mylog($logText);
+  } else {
+    mylog('данные отправлены: ' . $data);
   }
   
   curl_close($ch);
@@ -145,7 +161,5 @@ function checkGaParametr($query) {
   }
   return $errorMessaage;
 }
-
-
 
 ?>
