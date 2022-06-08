@@ -89,7 +89,7 @@ if (!empty($data)) {
 
   $error = checkGaParametr($query);
   if (!empty($error)) {
-    mylog($error);
+    mylog('error: ' . $error . ' lead id: ' . $idLead . ' ' . $queryString);
     http_response_code(200);
     return;
   }
@@ -100,7 +100,7 @@ if (!empty($data)) {
 
   sendData($endpoint, $queryString, $headers, 'POST');
 } else {
-  $logText = 'данные от АМО отсутствуют';
+  $logText = 'error: данные от АМО отсутствуют ' . http_build_query($query, '', '&', PHP_QUERY_RFC3986);
   mylog($logText);
 }
 
