@@ -71,6 +71,7 @@ if (!empty($data)) {
   }
 
   if (isset($query['cid'])) {
+    $query['cid'] = str_replace('GA1.2.', '', $query['cid']);
     $query['cd1'] = $query['cid'];
   }
 
